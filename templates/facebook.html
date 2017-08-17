@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Login</title>
+  </head>
+  <body>
+  <h3>Login Using Facebook</h3><br>
+    <!-- page content -->
+  <!-- Add the Facebook Login Button -->
+  <script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=141998163057569"></script>
+   <script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '141998163057569',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.8'
+    });
+    FB.AppEvents.logPageView();   
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     // connect.facebook.net/en_US/sdk.js from facebook documentation does not work
+     js.src = "https://connect.facebook.net/en_US/sdk.js"; 
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+
+<!-- <div class="fb-login-button" data-width="25" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div> -->
+   
+   <fb:login-button 
+  scope="public_profile"
+  return_scopes = "True"
+  onlogin="fb_login();"
+
+  >
+<!--   onlogin="checkLoginState();"
+ -->
+</fb:login-button>
+
+<!-- The first step when loading your web page is figuring out if a person is already logged into your app with Facebook login. You start that process with a call to FB.getLoginStatus. That function will trigger a call to Facebook to get the login status and call your callback function with the results. 
+{
+    status: 'connected',
+    authResponse: {
+        accessToken: '...',
+        expiresIn:'...',
+        signedRequest:'...',
+        userID:'...'
+    }
+}
+-->
+ <script>
+function checkLoginState(){
+  FB.getLoginStatus(function(response) {
+      // statusChangeCallback(response);
+      console.log(response);
+      userID = response.authResponse.userID;
+      get_user_info(userID);
+  }); 
+}
+
+
+function fb_login(){
+    FB.login(function(response) {
+        if (response.authResponse) {
+            console.log('Welcome!  Fetching your information.... ');
+            console.log(response); // dump complete info
+            console.log('Status =  '+ response.status); // dump complete info
+            var accessToken =   FB.getAuthResponse()['accessToken'];
+            console.log('Access Token = '+ accessToken);
+            var userID = FB.getAuthResponse()['userID']; //get FB UID
+            console.log("userID: "+ userID);
+            //refer to getData() function below
+            getData(accessToken);
+        } else {
+            //user hit cancel button
+            console.log('User cancelled login or did not fully authorize.');
+        }
+    }, {'scope': 'public_profile,email,user_friends,user_likes,user_location'});
+}
+
+
+function getData(accessToken) {
+  FB.api('/me', 'get', { access_token: accessToken, fields: 'id,name,gender,email,location,friends,likes,picture' }, function(response) {
+    console.log(response);
+    console.log(response.name);
+    console.log(response.email);
+    console.log(response.location.name);
+
+
+    var name = response.name;
+    var email = response.email;
+    var location = response.location.name;
+
+    var data = {
+            "name": name,
+            "email": email,
+            "location": location
+    };
+
+    $.post("/add_user", data, redirect_to_add_child);
+
+
+    function redirect_to_add_child(result) {
+        window.location.replace ('http://localhost:5000/add_kid');
+    }
+
+    
+
+});
+  //check if the loginStatus works
+FB.getLoginStatus(function(response) {
+  if (response.status === 'connected') {
+    // the user is logged in and has authenticated your
+    // app, and response.authResponse supplies
+    // the user's ID, a valid access token, a signed
+    // request, and the time the access token 
+    // and signed request each expire
+
+    //redirect to start/location.ejs
+    //window.location = "start/location";
+
+  } else if (response.status === 'not_authorized') {
+    // the user is logged in to Facebook, 
+    // but has not authenticated your app
+  } else {
+    // the user isn't logged in to Facebook.
+  }
+});
+}
+
+</script>
+  </body>
+</html>
