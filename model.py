@@ -85,7 +85,7 @@ class Checkin(db.Model):
 class Kid_checkin(db.Model):
     """Checking a specific kid at the park by a user."""
 
-    __tablename__ = "kids_checkin"
+    __tablename__ = "kid_checkin"
 
     kid_checkin_id = db.Column(db.Integer,
                           autoincrement=True,

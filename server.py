@@ -1,7 +1,7 @@
 """Peers @ Park"""
 
 # from jinja2 import StrictUndefined
-from model import User, Kid, Checkin, db, connect_to_db 
+from model import User, Kid, Checkin, Kid_checkin, db, connect_to_db 
 
 from flask import Flask, render_template, request, flash, redirect, session
 
@@ -19,12 +19,6 @@ def index():
     """Homepage."""
 
     return render_template("home.html")
-
-# @app.route('/fb_callback')
-# def fb_callback():
-#     """Homepage."""
-
-#     print request.
 
 
 @app.route('/login')
@@ -84,32 +78,53 @@ def add_checkin_db():
     checkin_arrival_time = request.form["arrival-time"]
     checkin_departure_time= request.form["departure-time"]
     checkin_park_id = request.form["park-id"]
-    print '/#########################################\n\n\n\n\n\n\n\n\n'
-    print checkin_date
-    print checkin_arrival_time
-    print checkin_departure_time
-    print checkin_park_id
+    checkin_kids_id = request.form.getlist("kids")
+    print checkin_kids_id
+    for kid in checkin_kids_id:
+        print kid
+    # print '/\n\n\n\n\n\n\n\n\n##############DATA FROM FORM###########################\n\n\n\n\n\n\n\n\n'
+    # print checkin_date
+    # print checkin_arrival_time
+    # print checkin_departure_time
+    # print checkin_park_id
+    # print checkin_kids_id
+
     
     #convert string into datetime 
-    date_time_date = datetime.strptime(checkin_date, '%Y-%m-%d')
+    # date_time_date = datetime.strptime(checkin_date, '%Y-%m-%d')
     # date_time_checkin_arrival_time = datetime.strptime(checkin_arrival_time, '%H:%M')
     # date_time_checkin_departure_time = datetime.strptime(checkin_departure_time, '%H:%M')
     
 
-    print '/######################################### after datetime.strptime\n\n\n\n\n\n\n\n\n'
-    print date_time_date
-    # print date_time_checkin_arrival_time
+    # print '/######################################### after datetime.strptime\n\n\n\n\n\n\n\n\n'
+    # print date_time_date
+    # # print date_time_checkin_arrival_time
     # print date_time_checkin_departure_time
 
     # create a new checkin
     new_checkin = Checkin(user_id=session["user_id"], 
-                        checkin_date=date_time_date, 
+                        checkin_date=checkin_date, 
                         arrival_time=checkin_arrival_time, 
                         departure_time=checkin_departure_time, 
                         park_id=checkin_park_id,)
 
-
     db.session.add(new_checkin)
+    db.session.commit()
+    
+    print '/\n\n\n\n\n\n\n\n\n######################################### for kids checkin \n\n\n\n\n\n\n\n\n'
+
+    # # db.session.query(Checkin.checkin_id).filter_by(max(checkin_id))
+    # print last_key
+    # print new_checkin.user_id
+    # print new_checkin.arrival_time
+    # print new_checkin.park_id
+    print checkin_kids_id
+    print new_checkin.checkin_id
+
+    for kid_id in checkin_kids_id:
+        new_kid_checkin = Kid_checkin(checkin_id=new_checkin.checkin_id, 
+                                  kid_id=kid_id)
+        db.session.add(new_kid_checkin)
     db.session.commit()
        
     return redirect("/")
@@ -155,8 +170,6 @@ def add_kid_db():
     flash("kid %s added." % kid_name)
     
     return redirect("/")
-
-
 
 
 if __name__ == "__main__":

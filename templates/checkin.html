@@ -60,9 +60,12 @@
       <label for={{kid.kid_id}}>{{kid.name}}</label>
       {%endfor%}
       </div>
+
       <!-- Will contain the park_id (place_id from Google API) -->
       <input type='hidden' name='park-id' value='' id='park_id'>
-      <br><input type="submit">
+      <br><input type="submit" name='submit' id='submit'>
+
+
     </form>
     <!-- i -->
    
@@ -327,9 +330,9 @@
 
            
 
-            function redirect_to_home(result) {
-                window.location.replace ('/');  
-            }
+            // function redirect_to_home(result) {
+            //     window.location.replace ('/');  
+            // }
 
           }
         });
