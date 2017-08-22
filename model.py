@@ -21,11 +21,9 @@ class User(db.Model):
     user_id = db.Column(db.Integer,
                         autoincrement=True,
                         primary_key=True)
-
-    first_name = db.Column(db.String(64), nullable=True)
-    last_name = db.Column(db.String(64), nullable=True)
+    name = db.Column(db.String(100), nullable=True)
     email = db.Column(db.String(64), nullable=True)
-    city = db.Column(db.String(15), nullable=True)
+    location = db.Column(db.String(50), nullable=True)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -48,7 +46,7 @@ class Kid(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
     #Define one to many relationship to user (one user can have many kids but each kid is related to only one user)
-    user = db.relationship('User', backref='parks_checkin')
+    user = db.relationship('User', backref='user_kid')
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -59,20 +57,22 @@ class Kid(db.Model):
 class Checkin(db.Model):
     """Checking at a park by a user."""
 
-    __tablename__ = "checkins"
+    __tablename__ = "checkins" 
 
     checkin_id = db.Column(db.Integer,
                           autoincrement=True,
                           primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    checking_date = db.Column(db.DateTime)
-    arrival_time = db.Column(db.Integer)
-    departure_time = db.Column(db.Integer)
-    park_id = db.Column(db.Integer)
+    checkin_date = db.Column(db.DateTime)
+    arrival_time = db.Column(db.Time)
+    departure_time = db.Column(db.Time)
+    park_id = db.Column(db.String(50))
 
 
     #Define one to many relationship to user (one user can have many checkins but each checkin is related to only one user)
-    user = db.relationship('User', backref='parks_checkin')
+    # user = db.relationship('User', backref='parks_checkin')
+    user = db.relationship('User', backref=db.backref('parks_checkin'))
+
 
 
     def __repr__(self):
@@ -95,10 +95,11 @@ class Kid_checkin(db.Model):
 
 
     # Define relationship to check. Every checkin can have many many kid's checkins but each kid checkin is related on one checkin
-    checkin = db.relationship('Checkin', backref='parks_checkin', order_by='checking_date')  
-    
-    #Define one to many relationship to kid (one kid can have many kid checkis but each kid checkin is related to only one kid)
-    kid = db.relationship('Kid', backref='parks_checkin')
+    #************************ADDDDDDDD order by
+    checkin = db.relationship('Checkin', backref='kid_checkin')
+
+    #Define one to many relationship to kid (one kid can have many checkins but each kid checkin is related to only one kid)
+    kid = db.relationship('Kid', backref='kid_checkin')
     
 
     def __repr__(self):

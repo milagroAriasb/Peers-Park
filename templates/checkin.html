@@ -4,72 +4,69 @@
   <head>
     <meta charset="utf-8">
     <title>Search Parks</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-    
-   
     <style type="text/css">
         #map {
             height: 300px;
         }
     </style>
-
   </head>
 
-  <body>
-    
-    <form id="checkin" action= click>
-      Date:
-      <input type="date" name="date" value='today'><br>
-      Check from:
-      <select name="arrival_time" id="arrival_time">
-        <option value="7">7:00am</option>
-        <option value="8">8:00am</option> 
-        <option value="7">9:00am</option>
-        <option value="8">10:00am</option> 
-        <option value="9">9:00am</option>
-        <option value="10">10:00am</option> 
-        <option value="11">11:00am</option>
-        <option value="12">12:00pm</option> 
-        <option value="13">1:00pm</option>
-        <option value="14">2:00pm</option> 
-        <option value="15">3:00pm</option>
-        <option value="16">4:00pm</option> 
-        <option value="17">5:00pm</option>
-        <option value="18">6:00pm</option>
-      </select>   
-      To:
-      <select name="departure_time" id="departure_time">
-        <option value="8">8:00am</option> 
-        <option value="7">9:00am</option>
-        <option value="8">10:00am</option> 
-        <option value="9">9:00am</option>
-        <option value="10">10:00am</option> 
-        <option value="11">11:00am</option>
-        <option value="12">12:00pm</option> 
-        <option value="13">1:00pm</option>
-        <option value="14">2:00pm</option> 
-        <option value="15">3:00pm</option>
-        <option value="16">4:00pm</option> 
-        <option value="17">5:00pm</option>
-        <option value="18">6:00pm</option> 
-        <option value="19">7:00pm</option><br>
-      </select>   
+  <body> 
+
+   <!--FORM  -->
+    <form action= '/add_checkin' method='POST'>
+      <p>Date: <input type="date" name='date' ></p>
+<!--       <p>Arrival Time: <input type="time" name="arrival-time"></p>
+      <p>Departure Time: <input type="time" name="departure-time"></p> -->
+      Arrival Time:
+      <select name="arrival-time" id="arrival_time">
+        <option value="7:00">7:00am</option>
+        <option value="8:00">8:00am</option> 
+        <option value="9:00">9:00am</option>
+        <option value="10:00">10:00am</option> 
+        <option value="11:00">11:00am</option>
+        <option value="12:00">12:00pm</option> 
+        <option value="13:00">1:00pm</option>
+        <option value="14:00">2:00pm</option> 
+        <option value="15:00">3:00pm</option>
+        <option value="16:00">4:00pm</option> 
+        <option value="17:00">5:00pm</option>
+        <option value="18:00">6:00pm</option>
+      </select>   <br>
+      Departure Time:
+      <select name="departure-time" id="departure_time">
+        <option value="8:00">8:00am</option> 
+        <option value="9:00">9:00am</option>
+        <option value="10:00">10:00am</option> 
+        <option value="11:00">11:00am</option>
+        <option value="12:00">12:00pm</option> 
+        <option value="13:00">1:00pm</option>
+        <option value="14:00">2:00pm</option> 
+        <option value="15:00">3:00pm</option>
+        <option value="16:00">4:00pm</option> 
+        <option value="17:00">5:00pm</option>
+        <option value="18:00">6:00pm</option>
+        <option value="19:00">7:00pm</option>
+      </select><br>
+
 
       Kids 
       <div>
-        <!-- MAKE REQUEST FROM BD and look over each kid and create a checkbox for each of them -->
-      <input type="checkbox" id="kid1" name="kids" value="kid1">
-      <label for="kid1">kid 1</label>
-      <input type="checkbox" id="kid2" name="kids" value="kid2">
-      <label for="kid2">Kid 2</label>
-      <input type="checkbox" id="kid3" name="kids" value="kid2">
-      <label for="kid3">Kid 3</label>
+      <!-- get kids info from checkin route and create checkboxes with each kid using jinja -->
+      {%for kid in kids%}
+      <input type="checkbox" id={{kid.kid_id}} name="kids" value={{kid.kid_id}}>
+      <label for={{kid.kid_id}}>{{kid.name}}</label>
+      {%endfor%}
       </div>
-
+      <!-- Will contain the park_id (place_id from Google API) -->
+      <input type='hidden' name='park-id' value='' id='park_id'>
       <br><input type="submit">
     </form>
     <!-- i -->
-    Add another kid?
+   
+
 
 
 <!-- GOOGLE MAP showing current location -->
@@ -142,8 +139,8 @@
       var infowindow, map
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -33.8688, lng: 151.2195},
-          zoom: 13,
+          center: {lat:  37.773972, lng: -122.431297},
+          zoom: 12,
           styles: [
             {
               featureType: 'poi.attraction',
@@ -205,12 +202,16 @@
               lng: position.coords.longitude
 
             };
+
             var marker = new google.maps.Marker({
               position: pos,
               map: map,
               title: 'Hello World!'
             });
             map.setCenter(pos);
+            map.setZoom(16);
+
+
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
           });
@@ -219,6 +220,7 @@
           handleLocationError(false, infoWindow, map.getCenter());
         }
 
+        
         var input = document.getElementById('pac-input');
 
         var autocomplete = new google.maps.places.Autocomplete(input);
@@ -259,10 +261,18 @@
 
           infowindowContent.children['place-name'].textContent = place.name;
           infowindowContent.children['place-id'].textContent = place.place_id;
-          console.log(place.place_id)
+          console.log(typeof(place.place_id))
           infowindowContent.children['place-address'].textContent =
               place.formatted_address;
           infowindow.open(map, marker);
+
+
+          // Get place id after user searchs for a park and send it to the form 
+          park_id = place.place_id;
+
+          $('#park_id').attr('value',park_id)
+          
+
         });
 
 
@@ -304,14 +314,26 @@
             // me.infowindowContent.children['place-icon'].src = place.icon;
             me.infowindowContent.children['place-name'].textContent = place.name;
             me.infowindowContent.children['place-id'].textContent = place.place_id;
+            console.log(typeof(place.place_id))
             me.infowindowContent.children['place-address'].textContent =
                 place.formatted_address;
             me.infowindow.open(me.map);
+
+
+          // Get place id after user clicks for a park and send it to the form 
+
+            var park_id = place.place_id;
+            $('#park_id').attr('value',park_id)
+
+           
+
+            function redirect_to_home(result) {
+                window.location.replace ('/');  
+            }
+
           }
         });
       }
-
-
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD33R9gDYfAKyLOOolNm8pjGcA4b0T60k&libraries=places&callback=initMap"

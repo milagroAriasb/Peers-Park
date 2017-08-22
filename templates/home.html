@@ -6,12 +6,20 @@
   </head>
   <body>
   <h1>Peers @ Park</h1>
-  <a href="/selectedPark">Check one Park</a><br>
-<!--   <p>Click on one Park</p> -->
-  <!-- <p>Check near by Parks</p> -->
-  <a href="/see_near_by_parks">Check near by Parks</a><br>
-  <!-- <p>Login</p> -->
-  <a href="/login">Login using Facebook</a><br>
+  
+
+  {% if "user_id" in session %}
+    <a href="/selectedPark">Check one Park</a><br>
+    <a href="/see_near_by_parks">Check near by Parks</a><br>
+    <a href="/add_kid">Add another kid</a><br>
+    <a href="/add_checkin">Checkin</a><br>
+    <a href="/logout">Logout</a><br>
+
+  {% else %}
+    <a href="/login">Login using Facebook</a><br>
+  {% endif %}
+
+  <!-- <a href="/login">Login using Facebook</a><br> -->
 
   <!-- GOOGLE MAP showing current location -->
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
@@ -83,7 +91,7 @@
       var infowindow, map
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 37.4419, lng: 37.4419},
+          center: {lat: -33.8688, lng: 151.2195},
           zoom: 13,
           styles: [
             {
@@ -137,6 +145,7 @@
             }
           ]
         });
+
         var clickHandler = new ClickEventHandler();
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
@@ -251,7 +260,6 @@
           }
         });
       }
-
 
     </script>
 

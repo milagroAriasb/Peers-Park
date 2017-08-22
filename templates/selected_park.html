@@ -17,9 +17,14 @@
 
   <body>
     <form action= click>
-      Date:
-      <input type="date" name="date" value='today'><br>
-      Check from:
+      
+      <p>Date: <input type="date" name="date" ></p>
+      <div id="date_and_time">
+        <p>Arrival Time: <input type="time" name="arrival_time"></p>
+        <p>Departure Time: <input type="time" name="departure_time"></p>
+      </div>
+
+     <!--  Check from:
       <select name="arrival_time" id="arrival_time">
         <option value="7">7:00am</option>
         <option value="8">8:00am</option> 
@@ -52,7 +57,7 @@
         <option value="17">5:00pm</option>
         <option value="18">6:00pm</option> 
         <option value="19">7:00pm</option><br>
-      </select>   
+      </select>    -->
       <br><input type="submit">
     </form>
 <!-- GOOGLE MAP showing current location -->
