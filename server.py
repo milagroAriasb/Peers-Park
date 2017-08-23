@@ -3,7 +3,7 @@
 # from jinja2 import StrictUndefined
 from model import User, Kid, Checkin, Kid_checkin, db, connect_to_db 
 
-from flask import Flask, render_template, request, flash, redirect, session
+from flask import Flask, render_template, request, flash, redirect, session, jsonify
 
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -134,6 +134,17 @@ def selected_park():
     """Click on one park on the map."""
 
     return render_template("selected_park.html")
+
+@app.route('/selectedPark/park.json')
+def get_park_data():
+    date = request.args.get('date')
+    start_time_to_check = request.args.get('start_time_to_check')
+    end_time_to_check = request.args.get('end_time_to_check')
+    selected_park_id = request.args.get('selected_park_id')
+    
+
+    results = {"checkins":["bar"]}
+    return jsonify(results)
 
 
 @app.route('/see_near_by_parks')

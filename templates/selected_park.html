@@ -13,46 +13,6 @@
         }
     </style>
 
-  </head>
-
-  <body>
-    <form action= click>
-      <p>Date: <input type="date" name='date' ></p>
-<!--       <p>Arrival Time: <input type="time" name="arrival-time"></p>
-      <p>Departure Time: <input type="time" name="departure-time"></p> -->
-      Check Between:
-      <select name="arrival-time" id="arrival_time">
-        <option value="7:00">7:00am</option>
-        <option value="8:00">8:00am</option> 
-        <option value="9:00">9:00am</option>
-        <option value="10:00">10:00am</option> 
-        <option value="11:00">11:00am</option>
-        <option value="12:00">12:00pm</option> 
-        <option value="13:00">1:00pm</option>
-        <option value="14:00">2:00pm</option> 
-        <option value="15:00">3:00pm</option>
-        <option value="16:00">4:00pm</option> 
-        <option value="17:00">5:00pm</option>
-        <option value="18:00">6:00pm</option>
-      </select>  
-      and:
-      <select name="departure-time" id="departure_time">
-        <option value="8:00">8:00am</option> 
-        <option value="9:00">9:00am</option>
-        <option value="10:00">10:00am</option> 
-        <option value="11:00">11:00am</option>
-        <option value="12:00">12:00pm</option> 
-        <option value="13:00">1:00pm</option>
-        <option value="14:00">2:00pm</option> 
-        <option value="15:00">3:00pm</option>
-        <option value="16:00">4:00pm</option> 
-        <option value="17:00">5:00pm</option>
-        <option value="18:00">6:00pm</option>
-        <option value="19:00">7:00pm</option>
-      </select><br>
-      <br><input type="submit" name='submit' id='submit'>
-      <br><input type="submit">
-    </form>
 <!-- GOOGLE MAP showing current location -->
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
@@ -102,6 +62,44 @@
     </style>
   </head>
   <body>
+    <form action= click>
+      <p>Date: <input type="date" name='date' id='date' ></p>
+<!--       <p>Arrival Time: <input type="time" name="arrival-time"></p>
+      <p>Departure Time: <input type="time" name="departure-time"></p> -->
+      Check Between:
+      <select name="arrival-time" id="arrival_time">
+        <option value="7:00">7:00am</option>
+        <option value="8:00">8:00am</option> 
+        <option value="9:00">9:00am</option>
+        <option value="10:00">10:00am</option> 
+        <option value="11:00">11:00am</option>
+        <option value="12:00">12:00pm</option> 
+        <option value="13:00">1:00pm</option>
+        <option value="14:00">2:00pm</option> 
+        <option value="15:00">3:00pm</option>
+        <option value="16:00">4:00pm</option> 
+        <option value="17:00">5:00pm</option>
+        <option value="18:00">6:00pm</option>
+      </select>  
+      and:
+      <select name="departure-time" id="departure_time">
+        <option value="8:00">8:00am</option> 
+        <option value="9:00">9:00am</option>
+        <option value="10:00">10:00am</option> 
+        <option value="11:00">11:00am</option>
+        <option value="12:00">12:00pm</option> 
+        <option value="13:00">1:00pm</option>
+        <option value="14:00">2:00pm</option> 
+        <option value="15:00">3:00pm</option>
+        <option value="16:00">4:00pm</option> 
+        <option value="17:00">5:00pm</option>
+        <option value="18:00">6:00pm</option>
+        <option value="19:00">7:00pm</option>
+      </select><br>
+      <input type='hidden' name='park_id' id='park-id'>
+      <br><input type="submit" name='submit' id='submit'>
+      
+    </form>
     <input id="pac-input" class="controls" type="text"
         placeholder="Enter a location">
     <div id="map"></div>
@@ -110,6 +108,28 @@
       Place ID <span id="place-id"></span><br>
       <span id="place-address"></span>
     </div>
+
+    <script>
+
+    // event handler 
+    function checkPark(evt){
+      evt.preventDefault()
+      var selected_date = $('#date').val()
+      var start_time = $('#arrival_time').val()
+      var end_time = $('#departure_time').val()
+      var selected_park_id = $('#park_id').val()
+      $.get('selectedPark/park.json',
+        { 
+          date: selected_date,
+          start_time_to_check: start_time,
+          end_time_to_check: end_time,
+          selected_park_id: selected_park_id
+        }, function(data) {
+        console.log(data);
+      });
+    }
+    $('#submit').on('click', checkPark);
+    </script>
 
     <script>
       // This sample uses the Place Autocomplete widget to allow the user to search
@@ -253,7 +273,7 @@
 
           // Get place id after user searchs for a park and send it to the form 
           park_id = place.place_id;
-          $('#park_id').attr('value',park_id)
+          $('#park-id').attr('value',park_id)
           
 
         });
@@ -306,7 +326,7 @@
           // Get place id after user clicks for a park and send it to the form 
 
             var park_id = place.place_id;
-            $('#park_id').attr('value',park_id)
+            $('#park-id').attr('value',park_id)
 
 
             // function redirect_to_home(result) {
@@ -320,6 +340,11 @@
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD33R9gDYfAKyLOOolNm8pjGcA4b0T60k&libraries=places&callback=initMap"
         async defer></script>
+        
+    <!-- This allows browsers to ensure that resources hosted on third-party servers have not been tampered with -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
 
 
   </body>
