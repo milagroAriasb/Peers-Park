@@ -61,6 +61,12 @@
 
     </style>
   </head>
+
+  <!-- This allows browsers to ensure that resources hosted on third-party servers have not been tampered with -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+
   <body>
     <form action= click>
       <p>Date: <input type="date" name='date' id='date' ></p>
@@ -96,9 +102,11 @@
         <option value="18:00">6:00pm</option>
         <option value="19:00">7:00pm</option>
       </select><br>
-      <input type='hidden' name='park_id' id='park-id'>
+      <input type='hidden' name='park-id' id='park_id'>
+
       <br><input type="submit" name='submit' id='submit'>
       
+      <!-- Google map search bar for  -->
     </form>
     <input id="pac-input" class="controls" type="text"
         placeholder="Enter a location">
@@ -114,11 +122,15 @@
     // event handler 
     function checkPark(evt){
       evt.preventDefault()
+
+      // getting data from form
       var selected_date = $('#date').val()
       var start_time = $('#arrival_time').val()
       var end_time = $('#departure_time').val()
       var selected_park_id = $('#park_id').val()
+
       $.get('selectedPark/park.json',
+        // data from form turn into a dic
         { 
           date: selected_date,
           start_time_to_check: start_time,
@@ -273,8 +285,10 @@
 
           // Get place id after user searchs for a park and send it to the form 
           park_id = place.place_id;
-          $('#park-id').attr('value',park_id)
+          $('#park_id').attr('value',park_id)
           
+
+
 
         });
 
@@ -326,7 +340,7 @@
           // Get place id after user clicks for a park and send it to the form 
 
             var park_id = place.place_id;
-            $('#park-id').attr('value',park_id)
+            $('#park_id').attr('value',park_id)
 
 
             // function redirect_to_home(result) {
@@ -340,11 +354,6 @@
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD33R9gDYfAKyLOOolNm8pjGcA4b0T60k&libraries=places&callback=initMap"
         async defer></script>
-        
-    <!-- This allows browsers to ensure that resources hosted on third-party servers have not been tampered with -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
-    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-    crossorigin="anonymous"></script>
 
 
   </body>

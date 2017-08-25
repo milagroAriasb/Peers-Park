@@ -2,6 +2,8 @@
 
 from flask_sqlalchemy import SQLAlchemy
 
+
+
 # This is the connection to the PostgreSQL database; we're getting
 # this through the Flask-SQLAlchemy helper library. On this, we can
 # find the `session` object, where we do most of our interactions
@@ -41,7 +43,7 @@ class Kid(db.Model):
                          autoincrement=True,
                          primary_key=True)
     name = db.Column(db.String(30))
-    date_of_birth = db.Column(db.DateTime)
+    date_of_birth = db.Column(db.DateTime) # change to date instead of datetime
     gender = db.Column(db.String(10))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
@@ -79,7 +81,7 @@ class Checkin(db.Model):
         """Provide helpful representation when printed."""
 # ?????????????????????????Park ID integer need to change to %s? 
         s = "<Checkin checkin_id=%s checking_date=%s user_id=%s arrival_time=%s departure_time=%s> park_id=%s>"
-        return s % (self.checkin_id, self.checking_date, self.user_id,
+        return s % (self.checkin_id, self.checkin_date, self.user_id,
                     self.arrival_time, self.departure_time, self.park_id)
 
 class Kid_checkin(db.Model):

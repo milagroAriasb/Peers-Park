@@ -7,6 +7,10 @@ from flask import Flask, render_template, request, flash, redirect, session, jso
 
 from flask_debugtoolbar import DebugToolbarExtension
 
+from sqlalchemy import or_
+
+from sqlalchemy import and_
+
 from datetime import datetime
 
 
@@ -79,6 +83,7 @@ def add_checkin_db():
     checkin_departure_time= request.form["departure-time"]
     checkin_park_id = request.form["park-id"]
     checkin_kids_id = request.form.getlist("kids")
+    
     print checkin_kids_id
     for kid in checkin_kids_id:
         print kid
@@ -111,16 +116,6 @@ def add_checkin_db():
     db.session.add(new_checkin)
     db.session.commit()
     
-    print '/\n\n\n\n\n\n\n\n\n######################################### for kids checkin \n\n\n\n\n\n\n\n\n'
-
-    # # db.session.query(Checkin.checkin_id).filter_by(max(checkin_id))
-    # print last_key
-    # print new_checkin.user_id
-    # print new_checkin.arrival_time
-    # print new_checkin.park_id
-    print checkin_kids_id
-    print new_checkin.checkin_id
-
     for kid_id in checkin_kids_id:
         new_kid_checkin = Kid_checkin(checkin_id=new_checkin.checkin_id, 
                                   kid_id=kid_id)
@@ -137,14 +132,85 @@ def selected_park():
 
 @app.route('/selectedPark/park.json')
 def get_park_data():
+
+    # getting data from form
     date = request.args.get('date')
     start_time_to_check = request.args.get('start_time_to_check')
     end_time_to_check = request.args.get('end_time_to_check')
     selected_park_id = request.args.get('selected_park_id')
-    
+
+    print '/\n\n\n\n\n\n\n\n\n######################################### data type \n\n\n\n\n\n\n\n\n'
+    print "date", type(date), date
+    print "arrival time ", type(start_time_to_check), start_time_to_check
+    print "departure time", type(end_time_to_check), end_time_to_check
+    print "park_id", type(selected_park_id), selected_park_id
+
+    d =  datetime.strptime(date, '%Y-%m-%d')
+    at = datetime.strptime(start_time_to_check, '%H:%M')
+    dt = datetime.strptime(end_time_to_check, '%H:%M')
+    d = d.date() 
+    at = at.time()
+    dt = dt.time()
+
+   
+    #Make a fucntion (maybe returns only the list of checkin ids)
+    # Find checkin objects, at a certain date, certain park where the time range given 
+    # overlaps the checkin (more or less) 
+    found_checkins = Checkin.query.filter( 
+                    Checkin.checkin_date == d,
+                    Checkin.park_id == selected_park_id,
+                    or_(and_(Checkin.departure_time >= dt, 
+                             Checkin.arrival_time<=dt, 
+                             Checkin.arrival_time >= at),
+                        and_(Checkin.departure_time <= dt,
+                             Checkin.departure_time >= at,
+                             Checkin.arrival_time <= at),
+                        and_(Checkin.departure_time <= dt,
+                             Checkin.departure_time > Checkin.arrival_time,
+                             Checkin.arrival_time >= at),
+                        and_(Checkin.departure_time>= dt, 
+                             dt > at,
+                             Checkin.arrival_time <= at)
+                        )).all()
+
+
+    # Make Functions THE HORROR!!!!!!!!!!
+    checkin_ids =[]
+    # getting all the checkin_ids from the objests in found_checkins
+    for checkin in found_checkins:
+        checkin_ids.append(checkin.checkin_id)
+
+
+
+    # subquery use of the following query 
+    # Getting all kid_ids in the kid_checkin table  using the checkin
+    a= db.session.query(Kid_checkin.kid_id).filter(Kid_checkin.checkin_id.in_(checkin_ids)).subquery()
+   
+
+
+    # Get all the kids info from the kid table where kid_id is  in the result from a
+    kids_info= db.session.query(Kid.name, Kid.date_of_birth, Kid.gender).filter(Kid.kid_id.in_(a))
+
+    #create a list to 
+    list_kids=[]
+
+    for c in kids_info:
+        list_kids.append(c[0])
+
+    print '/\n\n\n\n\n\n\n\n\n##############DATA FROM FORM###########################\n\n\n\n\n\n\n\n\n'
+    for k_info in kids_info:
+        print "/\n\n\nKid Info/\n\n"
+        print k_info
 
     results = {"checkins":["bar"]}
     return jsonify(results)
+
+# def make_dic (checkins):
+#     data={}
+#     for checkin in checkins:
+#         data[checkin.checkin_id]=checkin.
+
+
 
 
 @app.route('/see_near_by_parks')
@@ -196,3 +262,6 @@ if __name__ == "__main__":
     DebugToolbarExtension(app)
 
     app.run(host="0.0.0.0")
+
+
+
