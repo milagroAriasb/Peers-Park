@@ -1,6 +1,7 @@
 """Models and database functions for Peers @ Park project."""
 
 from flask_sqlalchemy import SQLAlchemy
+from datetime import date, datetime
 
 
 
@@ -44,11 +45,26 @@ class Kid(db.Model):
                          primary_key=True)
     name = db.Column(db.String(30))
     date_of_birth = db.Column(db.DateTime) # change to date instead of datetime
-    gender = db.Column(db.String(10))
+    gender = db.Column(db.String(15))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
     #Define one to many relationship to user (one user can have many kids but each kid is related to only one user)
     user = db.relationship('User', backref='user_kid')
+
+    
+    # get date_of birth of an object and returns their age
+    def age(self):
+        today = date.today()
+        dob = self.date_of_birth.date()
+        age = today.year-dob.year 
+        #check if kid had bday already
+        had_bday = (today.month,today.day)>(dob.month,dob.day)
+        # if they haven't had their bday substract 1 to age
+        if not had_bday:
+            age-=1
+
+        return age
+
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -109,7 +125,7 @@ class Kid_checkin(db.Model):
 
 # Park ID integer need to change to %s? 
         s = "<Kid checkin checkin_id=%s checking_id=%s kid_id=%s >"
-        return s % (self.checkin_id, self.checking_id, self.kid_id)
+        return s % (self.kid_checkin_id, self.checkin_id, self.kid_id)
 
 
 

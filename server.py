@@ -173,37 +173,50 @@ def get_park_data():
                              Checkin.arrival_time <= at)
                         )).all()
 
-
-    # Make Functions THE HORROR!!!!!!!!!!
-    checkin_ids =[]
-    # getting all the checkin_ids from the objests in found_checkins
+    print '\n\n\n\n\n\n\n\n\n##############CHECKINS DATA###########################\n\n\n\n\n\n\n\n\n'
     for checkin in found_checkins:
-        checkin_ids.append(checkin.checkin_id)
+        print "\n\n\Chekin Info\n"
+        print checkin
+  
 
+    #Getting all the kids checkins related to the found checkins in the last query
+    #returns a list of lists (for each checkin there could be more than one kid checkin)
+    kid_checkins=[ checkin.kid_checkin for checkin in found_checkins]
 
+    print '\n\n\n\n\n\n\n\n\n##############Kid_checkin###########################'
+    print kid_checkins
+    #make all kid's checkins into a flat list
+    flat_kid_checkins = [kid for kid_grp in kid_checkins for kid in kid_grp]
 
-    # subquery use of the following query 
-    # Getting all kid_ids in the kid_checkin table  using the checkin
-    a= db.session.query(Kid_checkin.kid_id).filter(Kid_checkin.checkin_id.in_(checkin_ids)).subquery()
-   
+    print '\n\n\n\n\n\n\n\n\n##############flat_Kid_checkin###########################'
+    print flat_kid_checkins
+    print "***************len flat_kid_checkins", len(flat_kid_checkins)
 
+    kids = [kid.kid for kid in flat_kid_checkins]
+    print '\n\n\n\n\n\n\n\n\n##############kids###########################'
+    print kids
 
-    # Get all the kids info from the kid table where kid_id is  in the result from a
-    kids_info= db.session.query(Kid.name, Kid.date_of_birth, Kid.gender).filter(Kid.kid_id.in_(a))
+    kids_w_checkin = [(kid.checkin, kid.kid) for kid in flat_kid_checkins]
 
-    #create a list to 
-    list_kids=[]
+    print "There are ", len(flat_kid_checkins), "checkins in that range of time"
+    
 
-    for c in kids_info:
-        list_kids.append(c[0])
+    for i in range(len(flat_kid_checkins)):
+        print "arrival time",kids_w_checkin [i][0].arrival_time
+        print "departure time",kids_w_checkin[i][0].departure_time
+        print "Age", kids_w_checkin[i][1].age()
+        print "DOB", kids_w_checkin[i][1].date_of_birth
+        print "gender", kids_w_checkin[i][1].gender
 
-    print '/\n\n\n\n\n\n\n\n\n##############DATA FROM FORM###########################\n\n\n\n\n\n\n\n\n'
-    for k_info in kids_info:
-        print "/\n\n\nKid Info/\n\n"
-        print k_info
+    checkins_info= {"arrival time": [kids_w_checkin [i][0].arrival_time],
+                    "departure time": [kids_w_checkin[i][0].departure_time],
+                    "age": [kids_w_checkin[i][1].age()],
+                    "gender": [kids_w_checkin[i][1].gender]
+    }
 
     results = {"checkins":["bar"]}
-    return jsonify(results)
+
+    return jsonify(checkins_info)
 
 # def make_dic (checkins):
 #     data={}
