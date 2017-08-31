@@ -7,11 +7,13 @@ from flask import Flask, render_template, request, flash, redirect, session, jso
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
-from sqlalchemy import and_
+from util import format_string_time, format_string_date
 
-from datetime import datetime
+# from datetime import datetime
+
+
 
 
 app = Flask(__name__)
@@ -124,7 +126,7 @@ def add_checkin_db():
        
     return redirect("/")
 
-@app.route('/selectedPark')
+@app.route('/selected_Park')
 def selected_park():
     """Click on one park on the map."""
 
@@ -139,18 +141,21 @@ def get_park_data():
     end_time_to_check = request.args.get('end_time_to_check')
     selected_park_id = request.args.get('selected_park_id')
 
-    print '/\n\n\n\n\n\n\n\n\n######################################### data type \n\n\n\n\n\n\n\n\n'
-    print "date", type(date), date
-    print "arrival time ", type(start_time_to_check), start_time_to_check
-    print "departure time", type(end_time_to_check), end_time_to_check
-    print "park_id", type(selected_park_id), selected_park_id
+    # print '/\n\n\n\n\n\n\n\n\n######################################### data type \n\n\n\n\n\n\n\n\n'
+    # print "date", type(date), date
+    # print "arrival time ", type(start_time_to_check), start_time_to_check
+    # print "departure time", type(end_time_to_check), end_time_to_check
+    # print "park_id", type(selected_park_id), selected_park_id
+    
 
-    d =  datetime.strptime(date, '%Y-%m-%d')
-    at = datetime.strptime(start_time_to_check, '%H:%M')
-    dt = datetime.strptime(end_time_to_check, '%H:%M')
-    d = d.date() 
-    at = at.time()
-    dt = dt.time()
+    d =  format_string_date(date) 
+    at = format_string_time(start_time_to_check)
+    dt = format_string_time(end_time_to_check)
+
+   
+
+    
+   
 
    
     #Make a fucntion (maybe returns only the list of checkin ids)
@@ -173,50 +178,39 @@ def get_park_data():
                              Checkin.arrival_time <= at)
                         )).all()
 
-    print '\n\n\n\n\n\n\n\n\n##############CHECKINS DATA###########################\n\n\n\n\n\n\n\n\n'
-    for checkin in found_checkins:
-        print "\n\n\Chekin Info\n"
-        print checkin
+  
   
 
     #Getting all the kids checkins related to the found checkins in the last query
     #returns a list of lists (for each checkin there could be more than one kid checkin)
     kid_checkins=[ checkin.kid_checkin for checkin in found_checkins]
-
-    print '\n\n\n\n\n\n\n\n\n##############Kid_checkin###########################'
-    print kid_checkins
     #make all kid's checkins into a flat list
     flat_kid_checkins = [kid for kid_grp in kid_checkins for kid in kid_grp]
-
-    print '\n\n\n\n\n\n\n\n\n##############flat_Kid_checkin###########################'
-    print flat_kid_checkins
-    print "***************len flat_kid_checkins", len(flat_kid_checkins)
-
+    #
     kids = [kid.kid for kid in flat_kid_checkins]
-    print '\n\n\n\n\n\n\n\n\n##############kids###########################'
-    print kids
-
     kids_w_checkin = [(kid.checkin, kid.kid) for kid in flat_kid_checkins]
 
-    print "There are ", len(flat_kid_checkins), "checkins in that range of time"
-    
-
+  
+    results =[]
     for i in range(len(flat_kid_checkins)):
-        print "arrival time",kids_w_checkin [i][0].arrival_time
-        print "departure time",kids_w_checkin[i][0].departure_time
-        print "Age", kids_w_checkin[i][1].age()
-        print "DOB", kids_w_checkin[i][1].date_of_birth
-        print "gender", kids_w_checkin[i][1].gender
+    #     print "arrival time",kids_w_checkin [i][0].arrival_time
+    #     print "departure time",kids_w_checkin[i][0].departure_time
+    #     print "Age", kids_w_checkin[i][1].age()
+    #     print "DOB", kids_w_checkin[i][1].date_of_birth
+    #     print "gender", kids_w_checkin[i][1].gender
 
-    checkins_info= {"arrival time": [kids_w_checkin [i][0].arrival_time],
-                    "departure time": [kids_w_checkin[i][0].departure_time],
-                    "age": [kids_w_checkin[i][1].age()],
-                    "gender": [kids_w_checkin[i][1].gender]
-    }
+        checkins_info= {'arrivalTime': kids_w_checkin [i][0].arrival_time.isoformat(),
+                    'departureTime': kids_w_checkin[i][0].departure_time.isoformat(),
+                    'age': kids_w_checkin[i][1].age(),
+                    'gender': kids_w_checkin[i][1].gender
+        }
+        #add the info about each kid checkin to the list results
+        results.append(checkins_info)
 
-    results = {"checkins":["bar"]}
 
-    return jsonify(checkins_info)
+    results = {"checkins":results}
+
+    return jsonify(results)
 
 # def make_dic (checkins):
 #     data={}

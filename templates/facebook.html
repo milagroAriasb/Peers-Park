@@ -89,10 +89,6 @@
   // get user data from FB
   function getData(accessToken) {
     FB.api('/me', 'get', { access_token: accessToken, fields: 'id,name,gender,email,location,friends,likes,picture' }, function(response) {
-      // console.log(response);
-      // console.log(response.name);
-      // console.log(response.email);
-      // console.log(response.location.name);
 
       // Get user data from Fb and save it into variables 
       var name = response.name;

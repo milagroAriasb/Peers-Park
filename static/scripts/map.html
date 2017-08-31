@@ -15,66 +15,12 @@
 
   <body> 
 
-   <!--FORM  -->
-    <form action= '/add_checkin' method='POST'>
-      <p>Date: <input type="date" name='date' id='date' ></p>
-      <!-- set 'date' default value to today's date -->
-      <script>
-      document.getElementById('date').valueAsDate = new Date()
-      </script>
-      Arrival Time:
-      <select name="arrival-time" id="arrival_time">
-        <option value="7:00">7:00am</option>
-        <option value="8:00">8:00am</option> 
-        <option value="9:00">9:00am</option>
-        <option value="10:00">10:00am</option> 
-        <option value="11:00">11:00am</option>
-        <option value="12:00">12:00pm</option> 
-        <option value="13:00">1:00pm</option>
-        <option value="14:00">2:00pm</option> 
-        <option value="15:00">3:00pm</option>
-        <option value="16:00">4:00pm</option> 
-        <option value="17:00">5:00pm</option>
-        <option value="18:00">6:00pm</option>
-        <option value="19:00">7:00pm</option>
-      </select>   <br>
-      Departure Time:
-      <select name="departure-time" id="departure_time">
-        <option value="8:00">8:00am</option> 
-        <option value="9:00">9:00am</option>
-        <option value="10:00">10:00am</option> 
-        <option value="11:00">11:00am</option>
-        <option value="12:00">12:00pm</option> 
-        <option value="13:00">1:00pm</option>
-        <option value="14:00">2:00pm</option> 
-        <option value="15:00">3:00pm</option>
-        <option value="16:00">4:00pm</option> 
-        <option value="17:00">5:00pm</option>
-        <option value="18:00">6:00pm</option>
-        <option value="19:00">7:00pm</option>
-        <option value="20:00">8:00pm</option>
-      </select><br>
-
-
-      Kids 
-      <div>
-      <!-- get kids info from checkin route and create checkboxes with each kid using jinja -->
-      {%for kid in kids%}
-      <input type="checkbox" id={{kid.kid_id}} name="kids" value={{kid.kid_id}}>
-      <label for={{kid.kid_id}}>{{kid.name}}</label>
-      {%endfor%}
-      </div>
-
       <!-- Will contain the park_id (place_id from Google API) -->
       <input type='hidden' name='park-id' value='' id='park_id'>
       <br><input type="submit" name='submit' id='submit'>
 
 
-    </form>
-    <!-- i -->
-   
-
-
+  
 
 <!-- GOOGLE MAP showing current location -->
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
@@ -143,7 +89,36 @@
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
       var infowindow, map
+
       function initMap() {
+
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+          pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+
+          };
+
+          create_map();
+
+          var marker = new google.maps.Marker({
+            position: pos,
+            map: map,
+            title: 'Hello World!'
+          });
+          map.setCenter(pos);
+          map.setZoom(16);
+
+       }, function() {
+         handleLocationError(true, infoWindow, map.getCenter());
+       });
+     } else {
+       // If Browser doesn't support Geolocation
+       handleLocationError(false, infoWindow, map.getCenter());
+     }
+
+      function create_map() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat:  37.773972, lng: -122.431297},
           zoom: 12,
@@ -199,34 +174,10 @@
             }
           ]
         });
-        var clickHandler = new ClickEventHandler();
-        // Try HTML5 geolocation.
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-
-            };
-
-            var marker = new google.maps.Marker({
-              position: pos,
-              map: map,
-              title: 'Hello World!'
-            });
-            map.setCenter(pos);
-            map.setZoom(16);
+      }
 
 
-          }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
-          });
-        } else {
-          // If Browser doesn't support Geolocation
-          handleLocationError(false, infoWindow, map.getCenter());
-        }
-
-        
+        var clickHandler = new ClickEventHandler(); 
         var input = document.getElementById('pac-input');
 
         var autocomplete = new google.maps.places.Autocomplete(input);
@@ -275,12 +226,9 @@
 
           // Get place id after user searchs for a park and send it to the form 
           park_id = place.place_id;
-          $('#park_id').attr('value',park_id)
-          
+          $('#park_id').attr('value',park_id)     
 
         });
-
-
         
       }
       // map click event stuff
@@ -326,11 +274,8 @@
 
 
           // Get place id after user clicks for a park and send it to the form 
-
             var park_id = place.place_id;
             $('#park_id').attr('value',park_id)
-
-           
 
             // function redirect_to_home(result) {
             //     window.location.replace ('/');  
