@@ -140,13 +140,8 @@ def get_park_data():
     start_time_to_check = request.args.get('start_time_to_check')
     end_time_to_check = request.args.get('end_time_to_check')
     selected_park_id = request.args.get('selected_park_id')
-    age = request.args.get('age')
-    gender = request.args.get('gender')
-
-    # print "/Age and gender\n\n\n\n\n\n\n\n\n"
-    # print age 
-    # print gender
-
+    # age = request.args.get('age')
+    # gender = request.args.get('gender')
 
     
     # formating datetime values to be comparable with the data base
@@ -182,7 +177,7 @@ def get_park_data():
     
     # for i in results:
     #     print i 
-    
+
     # for checkin in results:
     #     print checkin
 
