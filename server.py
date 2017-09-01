@@ -9,7 +9,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from sqlalchemy import or_, and_
 
-from util import format_string_time, format_string_date
+from util import format_string_time, format_string_date, find_checkins
 
 # from datetime import datetime
 
@@ -140,65 +140,38 @@ def get_park_data():
     start_time_to_check = request.args.get('start_time_to_check')
     end_time_to_check = request.args.get('end_time_to_check')
     selected_park_id = request.args.get('selected_park_id')
+    age = request.args.get('age')
+    gender = request.args.get('gender')
 
-    # print '/\n\n\n\n\n\n\n\n\n######################################### data type \n\n\n\n\n\n\n\n\n'
-    # print "date", type(date), date
-    # print "arrival time ", type(start_time_to_check), start_time_to_check
-    # print "departure time", type(end_time_to_check), end_time_to_check
-    # print "park_id", type(selected_park_id), selected_park_id
+    # print "/Age and gender\n\n\n\n\n\n\n\n\n"
+    # print age 
+    # print gender
+
+
     
-
+    # formating datetime values to be comparable with the data base
     d =  format_string_date(date) 
     at = format_string_time(start_time_to_check)
     dt = format_string_time(end_time_to_check)
 
-   
-
-    
-   
-
-   
-    #Make a fucntion (maybe returns only the list of checkin ids)
-    # Find checkin objects, at a certain date, certain park where the time range given 
-    # overlaps the checkin (more or less) 
-    found_checkins = Checkin.query.filter( 
-                    Checkin.checkin_date == d,
-                    Checkin.park_id == selected_park_id,
-                    or_(and_(Checkin.departure_time >= dt, 
-                             Checkin.arrival_time<=dt, 
-                             Checkin.arrival_time >= at),
-                        and_(Checkin.departure_time <= dt,
-                             Checkin.departure_time >= at,
-                             Checkin.arrival_time <= at),
-                        and_(Checkin.departure_time <= dt,
-                             Checkin.departure_time > Checkin.arrival_time,
-                             Checkin.arrival_time >= at),
-                        and_(Checkin.departure_time>= dt, 
-                             dt > at,
-                             Checkin.arrival_time <= at)
-                        )).all()
-
-  
+   #query the database to get checkins in the given time range
+    found_checkins = find_checkins(d,at,dt,selected_park_id)
   
 
     #Getting all the kids checkins related to the found checkins in the last query
     #returns a list of lists (for each checkin there could be more than one kid checkin)
     kid_checkins=[ checkin.kid_checkin for checkin in found_checkins]
-    #make all kid's checkins into a flat list
+    #put all kid's checkins into a flat list
     flat_kid_checkins = [kid for kid_grp in kid_checkins for kid in kid_grp]
-    #
+    #put all the kids in a list ----NOT NEED IT-----
     kids = [kid.kid for kid in flat_kid_checkins]
+    #combine the checking info with the kids's info in a single list
     kids_w_checkin = [(kid.checkin, kid.kid) for kid in flat_kid_checkins]
 
   
+  #MAKE FUCTION
     results =[]
     for i in range(len(flat_kid_checkins)):
-    #     print "arrival time",kids_w_checkin [i][0].arrival_time
-    #     print "departure time",kids_w_checkin[i][0].departure_time
-    #     print "Age", kids_w_checkin[i][1].age()
-    #     print "DOB", kids_w_checkin[i][1].date_of_birth
-    #     print "gender", kids_w_checkin[i][1].gender
-
         checkins_info= {'arrivalTime': kids_w_checkin [i][0].arrival_time.isoformat(),
                     'departureTime': kids_w_checkin[i][0].departure_time.isoformat(),
                     'age': kids_w_checkin[i][1].age(),
@@ -206,18 +179,35 @@ def get_park_data():
         }
         #add the info about each kid checkin to the list results
         results.append(checkins_info)
+    
+    # for i in results:
+    #     print i 
+    
+    # for checkin in results:
+    #     print checkin
+
+    # # filter by gender and age
+    # if age != "" and gender != "-":
+    #     for checkin in results:
+    #         if results[gender] != gender and results[age] != age:
+    #             results.remove[chekin]
+
+    # #filter by gender only
+    # if age == "" and gender != "-":
+    #     for checkin in results:
+    #         if results[gender] != gender:
+    #             results.remove[chekin]
+
+    # #filter by age only
+    # if age != "" and gender == "-":
+    #     for checkin in results:
+    #         if results[age] != age:
+    #             results.remove[chekin]
 
 
     results = {"checkins":results}
 
     return jsonify(results)
-
-# def make_dic (checkins):
-#     data={}
-#     for checkin in checkins:
-#         data[checkin.checkin_id]=checkin.
-
-
 
 
 @app.route('/see_near_by_parks')
@@ -242,15 +232,13 @@ def add_kid_db():
     kid_name = request.form["name"]
     kid_date_of_birth = request.form["date_of_birth"]
     kid_gender = request.form["gender"]
-    
-    # print '*****************/\n\n\n\n\n\n\n\n\n\n'
-    # print session["user_id"]
 
+    #create a new kid
     new_kid = Kid(name=kid_name, gender=kid_gender, date_of_birth=kid_date_of_birth, user_id=session["user_id"])
-
     db.session.add(new_kid)
     db.session.commit()
 
+    #NOT WORKING ---------
     flash("kid %s added." % kid_name)
     
     return redirect("/")

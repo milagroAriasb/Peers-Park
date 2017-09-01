@@ -22,7 +22,7 @@
           // If Browser doesn't support Geolocation
           alert("Must have location to use app!");
         }
-      
+       
         setAutoCompleteOnSearchBarByID('pac-input');
         createParkIdentidentifier();
       }
@@ -173,14 +173,15 @@
       
       function respondToGeolocation(position){
             pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude
             };
-            var title = 'Hello World!';
+            var title = 'You are here!';
             var marker = createLocalMarker(title)
             map.setCenter(pos);
             map.setZoom(14);
           }
+
         function searchBarEventHandler(autocomplete) {
           infowindow.close();
           var place = autocomplete.getPlace();
@@ -220,3 +221,49 @@
             searchBarEventHandler(autocomplete);
           });
         }
+
+      //   function nearbyParks(position){
+      //         // body...
+      //     pos = {
+      //           lat: position.coords.latitude,
+      //           lng: position.coords.longitude
+      //         };
+              
+      //         console.log(pos)
+      //       //DO it need to create a new map????????????????
+      //     // map = new google.maps.Map(document.getElementById('map'), {
+      //     //   center: pos,
+      //     //   zoom: 15
+      //     // });
+
+      //     // infowindow = new google.maps.InfoWindow();
+
+      //     var service = new google.maps.places.PlacesService(map);
+      //     service.nearbySearch({
+      //       location: pos,
+      //       radius: 500,
+      //       type: ['park']
+      //     }, callback);
+
+      //   }
+
+      //   function callback(results, status) {
+      //   if (status === google.maps.places.PlacesServiceStatus.OK) {
+      //     for (var i = 0; i < results.length; i++) {
+      //       createMarker(results[i]);
+      //       }
+      //     }
+      //   }
+
+      // function createMarker(place) {
+      //   var placeLoc = place.geometry.location;
+      //   var marker = new google.maps.Marker({
+      //     map: map,
+      //     position: place.geometry.location
+      //   });
+
+      //   google.maps.event.addListener(marker, 'click', function() {
+      //     infowindow.setContent(place.name);
+      //     infowindow.open(map, this);
+      //     });
+      //   }

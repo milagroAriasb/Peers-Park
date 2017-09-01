@@ -12,6 +12,14 @@
     <meta charset="utf-8">
     <link href="./static/styles/main.css" rel="stylesheet" >
     <link href="./static/styles/map.css" rel="stylesheet" >
+    <style>
+      .reveal-if-active {
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      }
+   
+    </style>
 
   </head>
 
@@ -21,6 +29,7 @@
     <h1> Find Friends @ Park</h1>
     <h5>Find the park you want to check out on the map</h5>
     <form action= click>
+
       <p>Date: <input type="date" name='date' id='date' ></p>
       <!-- set 'date' default value to today's date -->
       
@@ -60,8 +69,25 @@
         <option value="20:00">8:00pm</option>
 
       </select><br>
+      <div>
+        <input type="checkbox" name="filters" id="filters">
+        
+        <label for="filters">Filters</label>
 
-      <div id="filters">
+        <div id='filter' hidden>
+          <label for="filters">Gender</label>
+          <select name="gender" id="gender" ><br>
+            <option value="-"> - </option>
+            <option value="Girl">Girl</option>
+            <option value="Boy">Boy</option> 
+          </select><br>
+          <label for="age">Age</label>
+          <input type="text" name="age" id="age" placeholder=""/><br>
+        </div>
+      </div>
+    
+      
+      <!-- <div id="filters">
       Filters (optional):<br>
       Gender:
       <select name="gender" id="gender" ><br>
@@ -70,13 +96,12 @@
       <option value="Boy">boy</option> 
       </select><br>
       Age:
-      <input type="text" name="name" /><br>
-      </div>
+      <input type="text" name="age" id="age" placeholder=""/><br>
+      </div> -->
 
       <input type='hidden' name='park-id' id='park_id'>
       <br><input type="submit" name='submit' id='submit'> 
       
-    
     </form>
 
      <!-- Google map search bar for  -->
