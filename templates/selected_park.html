@@ -7,18 +7,17 @@
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <!-- GOOGLE MAP showing current location -->
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
     <link href="./static/styles/main.css" rel="stylesheet">
     <link href="./static/styles/map.css" rel="stylesheet">
-    <style>
-        .reveal-if-active {
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-        }
-    </style>
 
 </head>
 
@@ -70,12 +69,6 @@
             <input type='hidden' name='park-id' id='park_id'>
             <input type="submit" name='submit' id='submit'>
             <button onclick="goBack()">Go Back</button>
-            <script>
-              function goBack() {
-                window.history.back();
-              }
-            </script>
-
 
         </form>
     </div>
@@ -100,7 +93,6 @@
     </div>
     <div id="infowindow-content">
         <span id="place-name" class="title"></span>
-        <br> Place Name <span id="place-id"></span>
         <br>
         <span id="place-address"></span>
     </div>
@@ -108,7 +100,10 @@
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
-    <script src='/static/scripts/checkPark.js'></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script src='/static/scripts/selected_map.js'></script>
     <script src='/static/scripts/map.js'></script>
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>

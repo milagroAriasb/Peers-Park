@@ -56,15 +56,10 @@
 
 
       ClickEventHandler.prototype.handleClick = function(event) {
-        // console.log('You clicked on: ' + event.latLng);
         createLocalMarker("Hello");
         // If the event has a placeId, use it.
         if (event.placeId) {
-          // console.log('You clicked on place:' + event.placeId);
-          // Calling e.stop() on the event prevents the default info window from
-          // showing.
-          // If you call stop here when there is no placeId you will prevent some
-          // other map click event handlers from receiving the event.
+       
           event.stop();
           this.getPlaceInformation(event.placeId);
         }
@@ -76,14 +71,6 @@
         this.placesService.getDetails({placeId: placeId}, function(place, status) {
           if (status === 'OK') {
             infowindow.close();
-            // infowindow.setPosition(place.geometry.location);
-            // // me.infowindowContent.children['place-icon'].src = place.icon;
-            // infowindowContent.children['place-name'].textContent = place.name;
-            // // infowindowContent.children['place-id'].textContent = place.place_id;
-            // // console.log(typeof(place.place_id))
-            // infowindowContent.children['place-address'].textContent =
-            //     place.formatted_address;
-            // infowindow.open(me.map);
 
             locator.setPlace({
             placeId: place.place_id,
@@ -91,8 +78,6 @@
             });
             locator.setVisible(true);
             infowindowContent.children['place-name'].textContent = place.name;
-            // infowindowContent.children['place-id'].textContent = place.place_id;
-            // console.log(typeof(place.place_id))
             infowindowContent.children['place-address'].textContent =
                 place.formatted_address;
             infowindow.open(map, locator);
@@ -100,9 +85,7 @@
           // Get place id after user clicks for a park and send it to the form 
             var park_id = place.place_id;
             $('#park_id').attr('value',park_id)
-            // function redirect_to_home(result) {
-            //     window.location.replace ('/');  
-            // }
+            
             
           }
         });
@@ -114,6 +97,173 @@
           center: center,
           zoom: zoom,
           styles: [
+
+            {
+        featureType: "poi.park",
+        elementType: "geometry",
+        stylers: [
+            {
+                "hue": "#83cead"
+            },
+            {
+                "saturation": 1
+            },
+            {
+                "lightness": -15
+            },
+            {
+                "visibility": "on"
+            }
+        ]
+    },
+
+            {
+        featureType: "landscape",
+        elementType: "geometry",
+        stylers: [
+            {
+                "hue": "#f3f4f4"
+            },
+            {
+                "saturation": -84
+            },
+            {
+                "lightness": 59
+            },
+            {
+                "visibility": "on"
+            }
+        ]
+    },
+    {
+        featureType: "landscape",
+        elementType: "labels",
+        stylers: [
+            {
+                "hue": "#ffffff"
+            },
+            {
+                "saturation": -100
+            },
+            {
+                "lightness": 100
+            },
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+
+            {
+               featureType: "water",
+               elementType: "all",
+               stylers: [
+                  {
+                      "hue": "#7fc8ed"
+                  },
+                  {
+                      "saturation": 55
+                  },
+                  {
+                      "lightness": -6
+                  },
+                  {
+                      "visibility": "on"
+                  }
+              ]
+            },
+
+    //         {
+    //     featureType: "road",
+    //     elementType: "geometry",
+    //     stylers: [
+    //         {
+    //             "hue": "#ffffff"
+    //         },
+    //         {
+    //             "saturation": -100
+    //         },
+    //         {
+    //             "lightness": 100
+    //         },
+    //         {
+    //             "visibility": "on"
+    //         }
+    //     ]
+    // // },
+    // {
+    //     featureType: "road",
+    //     elementType: "labels",
+    //     stylers: [
+    //         {
+    //             "hue": "#bbbbbb"
+    //         },
+    //         {
+    //             "saturation": -100
+    //         },
+    //         {
+    //             "lightness": 26
+    //         },
+    //         {
+    //             "visibility": "on"
+    //         }
+    //     ]
+    // },
+    // {
+    //     featureType: "road.arterial",
+    //     elementType: "geometry",
+    //     stylers: [
+    //         {
+    //             "hue": "#ffcc00"
+    //         },
+    //         {
+    //             "saturation": 100
+    //         },
+    //         {
+    //             "lightness": -35
+    //         },
+    //         {
+    //             "visibility": "simplified"
+    //         }
+    //     ]
+    // },
+    // {
+    //     featureType: "road.highway",
+    //     elementType: "geometry",
+    //     stylers: [
+    //         {
+    //             "hue": "#ffcc00"
+    //         },
+    //         {
+    //             "saturation": 100
+    //         },
+    //         {
+    //             "lightness": -22
+    //         },
+    //         {
+    //             "visibility": "on"
+    //         }
+    //     ]
+    // },
+    {
+        featureType: "poi.school",
+        elementType: "all",
+        stylers: [
+            {
+                "hue": "#d7e4e4"
+            },
+            {
+                "saturation": -60
+            },
+            {
+                "lightness": 23
+            },
+            {
+                "visibility": "on"
+            }
+        ]
+    },
+
             {
               featureType: 'poi.attraction',
               elementType: "all",
@@ -169,7 +319,7 @@
       }
 
       function createMarker(position, title){
-        var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+        var image = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
                   
         if (bluemarker == true){
           var marker = new google.maps.Marker({
@@ -238,8 +388,6 @@
           });
           locator.setVisible(true);
           infowindowContent.children['place-name'].textContent = place.name;
-          // infowindowContent.children['place-id'].textContent = place.place_id;
-          // console.log(typeof(place.place_id))
           infowindowContent.children['place-address'].textContent =
               place.formatted_address;
           infowindow.open(map, locator);

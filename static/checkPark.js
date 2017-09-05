@@ -210,7 +210,6 @@ function displayParkData(parkid, kids){
   getParkNameBy(parkid, kids)
 }
 
-
 function getParkNameBy(parkid, kids){
       console.log(kids)
 
@@ -235,4 +234,8 @@ function getParkNameBy(parkid, kids){
 
   }
 }
+
+function goBack() {
+              window.history.back();
+            }
   
