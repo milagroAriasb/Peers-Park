@@ -124,6 +124,7 @@ function initMap() {
       }
     ]
   });
+
   var clickHandler = new ClickEventHandler();
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
@@ -159,14 +160,15 @@ function initMap() {
   infowindow.setContent(infowindowContent);
   var marker = new google.maps.Marker({
     map: map
+    // icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|ddd'
   });
   marker.addListener('click', function() {
     infowindow.open(map, marker);
   });
-
+var place;
   autocomplete.addListener('place_changed', function() {
     infowindow.close();
-    var place = autocomplete.getPlace();
+    place = autocomplete.getPlace();
     if (!place.geometry) {
       return;
     }
@@ -186,30 +188,34 @@ function initMap() {
     marker.setVisible(true);
 
     infowindowContent.children['place-name'].textContent = place.name;
-    infowindowContent.children['place-id'].textContent = place.place_id;
-    console.log(place.place_id)
+    //infowindowContent.children['place-id'].textContent = place.place_id;
+    //console.log(place.place_id)
     infowindowContent.children['place-address'].textContent =
         place.formatted_address;
     infowindow.open(map, marker);
   });
 
 
-  
 }
-// map click event stuff
-var ClickEventHandler = function() {
-  this.map = map;
-  this.placesService = new google.maps.places.PlacesService(map);
-  this.infowindow = new google.maps.InfoWindow;
-  this.infowindowContent = document.getElementById('infowindow-content');
-  this.infowindow.setContent(this.infowindowContent);
 
-  // Listen for clicks on the map.
-  this.map.addListener('click', this.handleClick.bind(this));
-}; 
+
+
+ClickEventHandler.prototype.getPlaceInformation = function(placeId) {
+  var me = this;
+  this.placesService.getDetails({placeId: placeId}, function(place, status) {
+    if (status === 'OK') {
+      me.infowindow.close();
+      me.infowindow.setPosition(place.geometry.location);
+      me.infowindowContent.children['place-name'].textContent = place.name;
+      me.infowindowContent.children['place-address'].textContent =
+          place.formatted_address;
+      me.infowindow.open(me.map);
+    }
+  });
+}
 
 ClickEventHandler.prototype.handleClick = function(event) {
-  console.log('You clicked on: ' + event.latLng);
+  // console.log('You clicked on: ' + event.latLng);
   // If the event has a placeId, use it.
   if (event.placeId) {
     console.log('You clicked on place:' + event.placeId);
@@ -223,24 +229,21 @@ ClickEventHandler.prototype.handleClick = function(event) {
   }
 };
 
-ClickEventHandler.prototype.getPlaceInformation = function(placeId) {
-  var me = this;
-  this.placesService.getDetails({placeId: placeId}, function(place, status) {
-    if (status === 'OK') {
-      me.infowindow.close();
-      me.infowindow.setPosition(place.geometry.location);
-      // me.infowindowContent.children['place-icon'].src = place.icon;
-      me.infowindowContent.children['place-name'].textContent = place.name;
-      me.infowindowContent.children['place-id'].textContent = place.place_id;
-      me.infowindowContent.children['place-address'].textContent =
-          place.formatted_address;
-      me.infowindow.open(me.map);
-    }
-  });
-}
+
+// map click event stuff
+var ClickEventHandler = function() {
+  this.map = map;
+  this.placesService = new google.maps.places.PlacesService(map);
+  this.infowindow = new google.maps.InfoWindow;
+  this.infowindowContent = document.getElementById('infowindow-content');
+  this.infowindow.setContent(this.infowindowContent);
+
+  // Listen for clicks on the map.
+  this.map.addListener('click', this.handleClick.bind(this));
+}; 
 
 
-</script>
+
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD33R9gDYfAKyLOOolNm8pjGcA4b0T60k&libraries=places&callback=initMap"
     async defer></script>

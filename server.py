@@ -89,24 +89,7 @@ def add_checkin_db():
     print checkin_kids_id
     for kid in checkin_kids_id:
         print kid
-    # print '/\n\n\n\n\n\n\n\n\n##############DATA FROM FORM###########################\n\n\n\n\n\n\n\n\n'
-    # print checkin_date
-    # print checkin_arrival_time
-    # print checkin_departure_time
-    # print checkin_park_id
-    # print checkin_kids_id
 
-    
-    #convert string into datetime 
-    # date_time_date = datetime.strptime(checkin_date, '%Y-%m-%d')
-    # date_time_checkin_arrival_time = datetime.strptime(checkin_arrival_time, '%H:%M')
-    # date_time_checkin_departure_time = datetime.strptime(checkin_departure_time, '%H:%M')
-    
-
-    # print '/######################################### after datetime.strptime\n\n\n\n\n\n\n\n\n'
-    # print date_time_date
-    # # print date_time_checkin_arrival_time
-    # print date_time_checkin_departure_time
 
     # create a new checkin
     new_checkin = Checkin(user_id=session["user_id"], 
@@ -134,23 +117,35 @@ def selected_park():
 
 @app.route('/selectedPark/park.json')
 def get_park_data():
-
+    print request.args
     # getting data from form
     date = request.args.get('date')
     start_time_to_check = request.args.get('start_time_to_check')
     end_time_to_check = request.args.get('end_time_to_check')
     selected_park_id = request.args.get('selected_park_id')
-    # age = request.args.get('age')
-    # gender = request.args.get('gender')
+    selected_park_list= request.args.getlist('selected_park_list[]')
+    
 
+    # print selected_park_id
+    # for park_id in selected_park_list:
+    #     print park_id
+    # # print selected_park_list
     
     # formating datetime values to be comparable with the data base
     d =  format_string_date(date) 
     at = format_string_time(start_time_to_check)
     dt = format_string_time(end_time_to_check)
 
+    # If user click on park
+    if selected_park_id:
    #query the database to get checkins in the given time range
-    found_checkins = find_checkins(d,at,dt,selected_park_id)
+        found_checkins = find_checkins(d,at,dt,selected_park_id)
+    elif selected_park_list: # if user chose nearby
+        found_checkins = []
+        for selected_park_id in selected_park_list:
+            found_checkins.extend(find_checkins(d,at,dt,selected_park_id))
+    else: 
+        return[]
   
 
     #Getting all the kids checkins related to the found checkins in the last query
@@ -163,53 +158,32 @@ def get_park_data():
     #combine the checking info with the kids's info in a single list
     kids_w_checkin = [(kid.checkin, kid.kid) for kid in flat_kid_checkins]
 
-  
+    print "kids in kids_w_checkin"
+    for kid in kids_w_checkin:
+        print kid
+
   #MAKE FUCTION
     results =[]
     for i in range(len(flat_kid_checkins)):
         checkins_info= {'arrivalTime': kids_w_checkin [i][0].arrival_time.isoformat(),
                     'departureTime': kids_w_checkin[i][0].departure_time.isoformat(),
                     'age': kids_w_checkin[i][1].age(),
-                    'gender': kids_w_checkin[i][1].gender
+                    'gender': kids_w_checkin[i][1].gender,
+                    'park_id': kids_w_checkin[i][0].park_id
         }
         #add the info about each kid checkin to the list results
         results.append(checkins_info)
-    
-    # for i in results:
-    #     print i 
-
-    # for checkin in results:
-    #     print checkin
-
-    # # filter by gender and age
-    # if age != "" and gender != "-":
-    #     for checkin in results:
-    #         if results[gender] != gender and results[age] != age:
-    #             results.remove[chekin]
-
-    # #filter by gender only
-    # if age == "" and gender != "-":
-    #     for checkin in results:
-    #         if results[gender] != gender:
-    #             results.remove[chekin]
-
-    # #filter by age only
-    # if age != "" and gender == "-":
-    #     for checkin in results:
-    #         if results[age] != age:
-    #             results.remove[chekin]
-
 
     results = {"checkins":results}
 
     return jsonify(results)
 
 
-@app.route('/see_near_by_parks')
-def near_parks():
-    """Click on one park on the map."""
+# @app.route('/see_near_by_parks')
+# def near_parks():
+#     """Click on one park on the map."""
 
-    return render_template("see_near_by_parks.html")
+#     return render_template("see_near_by_parks.html")
 
 
 @app.route('/add_kid')
@@ -233,8 +207,6 @@ def add_kid_db():
     db.session.add(new_kid)
     db.session.commit()
 
-    #NOT WORKING ---------
-    flash("kid %s added." % kid_name)
     
     return redirect("/")
 

@@ -1,25 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
-    <title>Search Parks</title>
-  </head>
-  <body>
-    <form action='/add_kid' method='POST' >
-      Name:
-      <input type="text" name="name" /><br>
-      DOB:
-      <input type="date" name="date_of_birth" id="date_of_birth"><br>
-      Gender:
-      <select name="gender" id="gender"><br>
-      <option value="Girl">girl</option>
-      <option value="Boy">boy</option> 
-      <option value="rather_dont_say">Rather don't say</option>
-      <input type="submit">
-    </select>
+    <title>Add kid</title>
+</head>
+
+<body>
+    <h1>Add Kid</h1>
+    <form name='add_kid' id='add_kid' action='/add_kid' method='POST'>
+        Name:
+        <input type="text" name="name" />
+        <br> DOB:
+        <input type="date" name="date_of_birth" id="date_of_birth">
+        <br> Gender:
+        <select name="gender" id="gender">
+            <br>
+            <option value="Girl">girl</option>
+            <option value="Boy">boy</option>
+            <option value="Rather don't say">Rather don't say</option>
+            <input type="submit">
+            <button onclick="goBack()">Go Back</button>
+            <script>
+              function goBack() {
+                window.history.back();
+              }
+            </script>
+        </select>
     </form>
 
     <script src='/static/scripts/checkPark.js'></script>
 
-  </body>
+</body>
+
 </html>

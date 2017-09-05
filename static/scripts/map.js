@@ -169,16 +169,31 @@
       }
 
       function createMarker(position, title){
-        var marker = new google.maps.Marker({
+        var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+                  
+        if (bluemarker == true){
+          var marker = new google.maps.Marker({
+              position: position,
+              map: map,
+              icon: image,
+              // animation: google.maps.Animation.DROP,
+              title: title
+            });
+        }else{
+          var marker = new google.maps.Marker({
               position: position,
               map: map,
               // animation: google.maps.Animation.DROP,
               title: title
             });
+        }
+
+        
         return marker
       }
-
+      var bluemarker = false;
       function createLocalMarker(title){
+        bluemarker = true;
         return createMarker(pos, title)
       }
 
@@ -267,7 +282,7 @@
             // console.log(nearByParkList[i].name);
             // console.log(nearByParkList[i].place_id);
            }
-           listparks(placeIdList);
+           // listparks(placeIdList);
 
           // $('#list_park_ids').append('value',placeIdList)
         }
@@ -300,16 +315,12 @@
               var service = new google.maps.places.PlacesService(map);
           service.nearbySearch({
             location: pos,
-            radius: 500,
+            radius: 1000,
             type: ['parks'],
             keyword: ['playground', 'parks']
           // keyword: ['parks']
           }, nearbyParksCallback);
-          }
+        }
         
         }
         $('#nearby').change(nearbyParks);
-
-
-
-

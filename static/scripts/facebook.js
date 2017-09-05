@@ -1,17 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Login</title>
-  </head>
-  <body>
-  <h3>Login Using Facebook</h3><br>
-    <!-- page content -->
-  <!-- Add the Facebook Login Button -->
-  <script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=141998163057569"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-   <script>
-  window.fbAsyncInit = function() {
+window.fbAsyncInit = function() {
     FB.init({
       appId      : '141998163057569',
       cookie     : true,
@@ -29,33 +16,8 @@
      js.src = "https://connect.facebook.net/en_US/sdk.js"; 
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
-</script>
 
-
-<!-- <div class="fb-login-button" data-width="25" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div> -->
-   
-   <fb:login-button 
-  scope="public_profile"
-  return_scopes = "True"
-  onlogin="fb_login();">
-<!--   onlogin="checkLoginState();"
- -->
-</fb:login-button>
-
-
-<!-- The first step when loading your web page is figuring out if a person is already logged into your app with Facebook login. You start that process with a call to FB.getLoginStatus. That function will trigger a call to Facebook to get the login status and call your callback function with the results. 
-{
-    status: 'connected',
-    authResponse: {
-        accessToken: '...',
-        expiresIn:'...',
-        signedRequest:'...',
-        userID:'...'
-    }
-}
--->
- <script>
-  function checkLoginState(){
+   function checkLoginState(){
     FB.getLoginStatus(function(response) {
         // statusChangeCallback(response);
         console.log(response);
@@ -130,8 +92,3 @@
     }
   });
   }
-
-</script>
-
-</body>
-</html>

@@ -1,89 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
-    <title>Peers @ Park</title>
-  </head>
-  <body>
-  <h1>Peers @ Park</h1>
+    <title>Peers @ the Park</title>
+</head>
+
+<body>
+    <h1>Peers @ the Park</h1> {% if "user_id" in session %}
+    <a href="/selected_Park">Find Peers @ the Park</a>
+    <br>
+    <a href="/add_checkin">Post</a>
+    <br>
+    <a href="/add_kid">Add Kid</a>
+    <br>
+    <a href="/logout">Logout</a>
+    <br> {% else %}
+
+    <script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=141998163057569"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src='/static/scripts/facebook.js'></script>
+
+    <fb:login-button scope="public_profile" return_scopes="True" onlogin="fb_login();">
+        <!--   onlogin="checkLoginState();"
+     -->
+    </fb:login-button>
+
   
 
-  {% if "user_id" in session %}
-    <a href="/selected_Park">Find Peers @ Park</a><br>
-    <!-- <a href="/see_near_by_parks">Check near by Parks</a><br> -->
-    <a href="/add_kid">Add Kid</a><br>
-    <a href="/add_checkin">Checkin</a><br>
-    <a href="/logout">Logout</a><br>
+    {% endif %}
 
-  {% else %}
-    <a href="/login">Login using Facebook</a><br>
-  {% endif %}
-
-  <!-- <a href="/login">Login using Facebook</a><br> -->
-
-  <!-- GOOGLE MAP showing current location -->
+    <!-- GOOGLE MAP showing current location -->
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-     <style>
-      /* Always set the map height explicitly to define the size of the div
+    <style>
+        /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
-      #map {
-        height: 50%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      .controls {
-        background-color: #fff;
-        border-radius: 2px;
-        border: 1px solid transparent;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        box-sizing: border-box;
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-        height: 29px;
-        margin-left: 17px;
-        margin-top: 10px;
-        outline: none;
-        padding: 0 11px 0 13px;
-        text-overflow: ellipsis;
-        width: 400px;
-      }
-
-      .controls:focus {
-        border-color: #4d90fe;
-      }
-      .title {
-        font-weight: bold;
-      }
-      #infowindow-content {
-        display: none;
-      }
-      #map #infowindow-content {
-        display: inline;
-      }
-
+        
+        #map {
+            height: 50%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .controls {
+            background-color: #fff;
+            border-radius: 2px;
+            border: 1px solid transparent;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            box-sizing: border-box;
+            font-family: Roboto;
+            font-size: 15px;
+            font-weight: 300;
+            height: 29px;
+            margin-left: 17px;
+            margin-top: 10px;
+            outline: none;
+            padding: 0 11px 0 13px;
+            text-overflow: ellipsis;
+            width: 400px;
+        }
+        
+        .controls:focus {
+            border-color: #4d90fe;
+        }
+        
+        .title {
+            font-weight: bold;
+        }
+        
+        #infowindow-content {
+            display: none;
+        }
+        
+        #map #infowindow-content {
+            display: inline;
+        }
     </style>
-  </head>
-  <body>
-    <input id="pac-input" class="controls" type="text"
-        placeholder="Enter a location">
-    <div id="map"></div>
-    <div id="infowindow-content">
-      <span id="place-name"  class="title"></span><br>
-      Place ID <span id="place-id"></span><br>
-      <span id="place-address"></span>
-    </div>
+    </head>
 
-    <script src='/static/scripts/map.js'></script>
+    <body>
+        <input id="pac-input" class="controls" type="text" placeholder="Enter a location">
+        <div id="map"></div>
+        <div id="infowindow-content">
+            <span id="place-name" class="title"></span>
+            <br> Place ID <span id="place-id"></span>
+            <br>
+            <span id="place-address"></span>
+        </div>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD33R9gDYfAKyLOOolNm8pjGcA4b0T60k&libraries=places&callback=initMap"
-        async defer></script>
+        <script src='/static/scripts/map.js'></script>
 
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD33R9gDYfAKyLOOolNm8pjGcA4b0T60k&libraries=places&callback=initMap" async defer></script>
 
-  </body>
+    </body>
+
 </html>
