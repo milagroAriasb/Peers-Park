@@ -13,9 +13,6 @@ from util import format_string_time, format_string_date, find_checkins
 
 # from datetime import datetime
 
-
-
-
 app = Flask(__name__)
 app.secret_key = "ABC"
 

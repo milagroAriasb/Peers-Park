@@ -1,6 +1,7 @@
  
-        #main.container{
-          height: 100%
+        #main{
+          height: 600px;
+
         }
 
         #map {
@@ -8,13 +9,19 @@
             width: 100%;
             
         }
+
+
         /* Optional: Makes the sample page fill the window. */
         
         html,
         body {
+
+            font-family: 'Noto Serif', serif;
+
             height: 100%;
             margin: 0;
             padding: 0;
+            color: #212121;
         }
         
         .controls {

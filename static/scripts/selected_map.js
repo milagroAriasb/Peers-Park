@@ -23,7 +23,6 @@ function filterCheckinValues(age, gender) {
 
   // check if the statemnets bellow is true. If so, it adds it that chekin to 
   //filter_checkin_data dictionary
-  // JONATHAN how to filter on a dictionary? 
   for (var i in checkin_data){
     var filter_checkin_data = checkin_data[i].filter(function(kid) {
 
@@ -37,8 +36,7 @@ function filterCheckinValues(age, gender) {
 
   });
   // if there is something in gender and age  but they are not 
-  //found in the kids 
-  //JONATHAN!!!!! 
+  //found in kids 
   if ((age != null) || (gender != null)) {
       displayFilteredKidsCheckin({
         checkins: filter_checkin_data
@@ -48,8 +46,6 @@ function filterCheckinValues(age, gender) {
         checkins: checkin_data[i]
       });
     }
-
-  
 }
   }
   
@@ -121,11 +117,8 @@ function filter_checkin(data) {
 
 // displays header for the results
 function displayHeader(parkid){
- //clear div
+
   // colum headers
-
-
-
   var header = "<h3 class='col-xs-12'>"+ parkid +"</h3>" +
   "<div class='col-xs-3'>Arrival Time</div>" +
     "<div class='col-xs-3'>Departure Time</div>" +
@@ -140,18 +133,12 @@ function displayFilteredKidsCheckin(data) {
   $("#display-results").text("");
   displayParkData(data.checkins[0]["park_id"], data.checkins)
   
-  // // getting data from response 
-  // for (var i in data.checkins) {
-  //   var kid = data.checkins[i]; //gettin one checking at the time
-  //   display_kid_checkin(kid)
-  // }
 
 }
 
 // displays all the results 
 function displayKidsCheckin(data) {
    console.log(data);
-
 
 
   for (var i in data.checkins) {

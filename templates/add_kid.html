@@ -1,36 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <title>Add kid</title>
-</head>
 
-<body>
-    <h1>Add Kid</h1>
+{%extends "base.html"%}
+{% block extraHead %}
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+ <link href="./static/styles/add_kid.css" rel="stylesheet">
+{% endblock %}
+{% block title %}Add Kid{% endblock %}
+{%block content%}
+
+
+<div id="main" class="container">
+    <center>
+    <div id="addKid" class="col-xs-4 col-xs-offset-4">
+    <h3>Add Kid</h3>
     <form name='add_kid' id='add_kid' action='/add_kid' method='POST'>
-        Name:
+        <label for="name">Name:</label>
         <input type="text" name="name" />
-        <br> DOB:
+        <br> 
+        <label for="date_of_birth">DOB:</label>
         <input type="date" name="date_of_birth" id="date_of_birth">
-        <br> Gender:
+        <br> 
+        <label for="gender">Gender:</label>
         <select name="gender" id="gender">
-            <br>
             <option value="Girl">girl</option>
             <option value="Boy">boy</option>
-            <option value="Rather don't say">Rather don't say</option>
-            <input type="submit">
-            <button onclick="goBack()">Go Back</button>
-            <script>
-                function goBack() {
-                    window.history.back();
-                }
-            </script>
+            <option value="Rather don't say">Irrelevant</option>
         </select>
+            <br>
+             <input type="submit">
+
     </form>
+    <br>
+    </div>
+</center>
+  </div>
 
-    <script src='/static/scripts/checkPark.js'></script>
-
-</body>
-
-</html>
+<script src='/static/scripts/checkPark.js'></script>
+ {%endblock%}

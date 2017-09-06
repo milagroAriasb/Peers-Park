@@ -2,20 +2,83 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <!-- Bootstrap -->
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <title>{% block title %}TITLE GOES HERE{% endblock %}</title>
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="./static/styles/home.css">
-    <!-- End of Bootstrap -->
+  <meta charset="utf-8">
+  <style type="text/css">
+    body{
+      background-image: url("./static/tree_bark.png");
+    }
+  </style>
 
+  
+  <!-- Bootstrap -->
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  
+  <!-- End of Bootstrap -->
+  {% block extraHead %}{% endblock %}
 </head>
 
 <body>
+
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Peers @ the Park</a>
+            </div>
+            {% if "user_id" in session %}
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/selected_Park">Find P@P</a></li>
+                <li><a href="/add_checkin">Create Post</a></li>
+                <li><a href="/add_kid">Add Kid</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                 {% else %}
+                 <ul class="nav navbar-nav navbar-right">
+                  <div class="btn
+                   navbar-btn">
+                  <fb:login-button scope="public_profile" return_scopes="True" onlogin="fb_login();" id="fb-button"></fb:login-button>
+                  </div>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+<div class="container">
+{% block content %}BODY CONTENT GOES HERE{% endblock %}
+</div>
+<!-- Bootstrap -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 </body>
 
 </html>
+
+
+<!-- 
+<!doctype html>
+<html>
+<head>
+    <title>Peers @ the Park</title>
+</head>
+<body>
+
+Ratings
+
+{% if "user_id" in session %}
+    <a href="/logout">Logout</a>
+{% else %}
+    <a href="/login">Login</a>
+{% endif %}
+
+
+</body>
+</html> -->

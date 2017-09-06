@@ -3,3 +3,6 @@
       max-height: 0;
       overflow: hidden;
       }
+body {
+    font-family: 'Noto Serif', serif;
+    }

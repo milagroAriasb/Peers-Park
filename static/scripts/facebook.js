@@ -19,7 +19,6 @@ window.fbAsyncInit = function() {
 
    function checkLoginState(){
     FB.getLoginStatus(function(response) {
-        // statusChangeCallback(response);
         console.log(response);
         userID = response.authResponse.userID;
         get_user_info(userID);
@@ -67,7 +66,7 @@ window.fbAsyncInit = function() {
 
 
       function redirect_to_add_child(result) {
-          window.location.replace ('/add_kid');
+          window.location.replace ('/');
          
       }
 
